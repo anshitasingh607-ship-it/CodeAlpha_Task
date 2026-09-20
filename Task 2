@@ -1,0 +1,267 @@
+const quotes = [
+
+    {
+        text: "The only way to do great work is to love what you do.",
+        author: "Steve Jobs"
+    },
+
+    {
+        text: "Believe you can and you're halfway there.",
+        author: "Theodore Roosevelt"
+    },
+
+    {
+        text: "It always seems impossible until it's done.",
+        author: "Nelson Mandela"
+    },
+
+    {
+        text: "Success is not final, failure is not fatal.",
+        author: "Winston Churchill"
+    },
+
+    {
+        text: "Don't watch the clock; do what it does. Keep going.",
+        author: "Sam Levenson"
+    },
+
+    {
+        text: "The future depends on what you do today.",
+        author: "Mahatma Gandhi"
+    },
+
+    {
+        text: "Dream big and dare to fail.",
+        author: "Norman Vincent Peale"
+    },
+
+    {
+        text: "You learn more from failure than from success.",
+        author: "Unknown"
+    },
+
+    {
+        text: "The secret of getting ahead is getting started.",
+        author: "Mark Twain"
+    },
+
+    {
+        text: "Hard work beats talent when talent doesn't work hard.",
+        author: "Tim Notke"
+    },
+
+    {
+        text: "Everything you can imagine is real.",
+        author: "Pablo Picasso"
+    },
+
+    {
+        text: "Stay hungry, stay foolish.",
+        author: "Steve Jobs"
+    },
+
+    {
+        text: "A journey of a thousand miles begins with a single step.",
+        author: "Lao Tzu"
+    },
+
+    {
+        text: "The best way to predict the future is to create it.",
+        author: "Peter Drucker"
+    },
+
+    {
+        text: "Success is the sum of small efforts, repeated day in and day out.",
+        author: "Robert Collier"
+    },
+
+    {
+        text: "If you can dream it, you can achieve it.",
+        author: "Zig Ziglar"
+    },
+
+    {
+        text: "Do something today that your future self will thank you for.",
+        author: "Sean Patrick Flanery"
+    },
+
+    {
+        text: "Great things never come from comfort zones.",
+        author: "Unknown"
+    },
+
+    {
+        text: "It does not matter how slowly you go as long as you do not stop.",
+        author: "Confucius"
+    },
+
+    {
+        text: "Your limitation—it’s only your imagination.",
+        author: "Unknown"
+    }
+
+];
+
+
+// Display a random quote
+function newQuote() {
+
+    const randomIndex =
+        Math.floor(Math.random() * quotes.length);
+
+    const randomQuote =
+        quotes[randomIndex];
+
+    document.getElementById("quote").textContent =
+        randomQuote.text;
+
+    document.getElementById("author").textContent =
+        "— " + randomQuote.author;
+}
+
+
+// Show a random quote when app opens
+newQuote();
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f2f4f7;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+.quote-container {
+    width: 90%;
+
+    max-width: 650px;
+
+    text-align: center;
+}
+
+h1 {
+    color: #222;
+
+    margin-bottom: 25px;
+}
+
+.quote-card {
+    background: white;
+
+    padding: 40px 35px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.quote-symbol {
+    font-size: 50px;
+
+    color: #4a69bd;
+}
+
+#quote {
+    font-size: 24px;
+
+    line-height: 1.6;
+
+    color: #333;
+
+    margin: 10px 0 20px;
+}
+
+#author {
+    color: #666;
+
+    margin-bottom: 30px;
+}
+
+button {
+    background: #4a69bd;
+
+    color: white;
+
+    border: none;
+
+    padding: 13px 25px;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background: #344e9b;
+}
+
+@media (max-width: 600px) {
+
+    .quote-card {
+        padding: 30px 20px;
+    }
+
+    #quote {
+        font-size: 20px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Random Quote Generator</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="quote-container">
+
+        <h1>✨ Random Quote Generator</h1>
+
+        <div class="quote-card">
+
+            <div class="quote-symbol">❝</div>
+
+            <p id="quote">
+                Quote will appear here
+            </p>
+
+            <h3 id="author">
+                — Author
+            </h3>
+
+            <button onclick="newQuote()">
+                New Quote
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
