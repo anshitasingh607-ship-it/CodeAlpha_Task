@@ -1,0 +1,1537 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f3f6;
+}
+
+.container {
+    width: 90%;
+    max-width: 750px;
+    margin: 30px auto;
+}
+
+h1 {
+    text-align: center;
+    color: #222;
+}
+
+.menu {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.menu button {
+    background: #4a69bd;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.menu button:hover {
+    background: #344e9b;
+}
+
+
+/* QUIZ */
+
+.top {
+    display: flex;
+    justify-content: space-between;
+
+    background: white;
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-bottom: 15px;
+
+    font-weight: bold;
+}
+
+.quiz-card {
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.quiz-card h2 {
+    margin-bottom: 25px;
+}
+
+
+/* OPTIONS */
+
+.option {
+    width: 100%;
+
+    padding: 15px;
+
+    margin: 10px 0;
+
+    text-align: left;
+
+    background: #f5f5f5;
+
+    border: 2px solid #ddd;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+.option:hover {
+    background: #e8edff;
+}
+
+.option.selected {
+    background: #dce5ff;
+
+    border-color: #4a69bd;
+}
+
+.option.correct {
+    background: #d4edda;
+
+    border-color: #28a745;
+}
+
+.option.wrong {
+    background: #f8d7da;
+
+    border-color: #dc3545;
+}
+
+
+/* RESULT */
+
+#result {
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    min-height: 25px;
+}
+
+
+/* BUTTONS */
+
+button {
+    font-size: 15px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 12px 20px;
+
+    cursor: pointer;
+}
+
+.submit {
+    display: block;
+
+    margin: auto;
+
+    background: #4a69bd;
+
+    color: white;
+}
+
+.submit:hover {
+    background: #344e9b;
+}
+
+.navigation {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 20px;
+}
+
+.navigation button {
+    background: #333;
+
+    color: white;
+}
+
+.navigation button:hover {
+    background: #555;
+}
+
+.restart {
+    display: block;
+
+    margin: 20px auto;
+
+    background: #e67e22;
+
+    color: white;
+}
+
+
+/* MANAGE */
+
+#manageSection {
+    display: none;
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 15px;
+}
+
+.form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.form input,
+.form select {
+    padding: 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 7px;
+
+    font-size: 15px;
+}
+
+.form button {
+    background: #27ae60;
+
+    color: white;
+}
+
+.form button:hover {
+    background: #219150;
+}
+
+
+/* QUESTION LIST */
+
+.question-item {
+    background: #f5f5f5;
+
+    padding: 15px;
+
+    margin: 10px 0;
+
+    border-radius: 8px;
+}
+
+.question-item p {
+    font-weight: bold;
+}
+
+.edit-btn {
+    background: #3498db;
+
+    color: white;
+
+    margin-right: 5px;
+}
+
+.delete-btn {
+    background: #e74c3c;
+
+    color: white;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .container {
+        width: 95%;
+    }
+
+    .quiz-card {
+        padding: 20px;
+    }
+
+    .navigation {
+        flex-direction: column;
+    }
+
+    .navigation button {
+        margin: 5px 0;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Flashcard Quiz App</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>📚 Flashcard Quiz App</h1>
+
+        <!-- Navigation -->
+        <div class="menu">
+            <button onclick="showQuiz()">Quiz</button>
+            <button onclick="showManage()">Manage Questions</button>
+        </div>
+
+
+        <!-- ================= QUIZ SECTION ================= -->
+
+        <div id="quizSection">
+
+            <div class="top">
+                <span id="questionNumber">Question 1 of 50</span>
+                <span id="score">Score: 0</span>
+            </div>
+
+            <div class="quiz-card">
+
+                <h2 id="question">
+                    Question
+                </h2>
+
+                <div id="options"></div>
+
+                <p id="result"></p>
+
+                <button class="submit" onclick="submitAnswer()">
+                    Submit Answer
+                </button>
+
+            </div>
+
+            <div class="navigation">
+
+                <button onclick="previousQuestion()">
+                    ← Previous
+                </button>
+
+                <button onclick="nextQuestion()">
+                    Next →
+                </button>
+
+            </div>
+
+            <button class="restart" onclick="restartQuiz()">
+                🔄 Restart Quiz
+            </button>
+
+        </div>
+
+
+        <!-- ================= MANAGE SECTION ================= -->
+
+        <div id="manageSection">
+
+            <h2>Manage Questions</h2>
+
+            <div class="form">
+
+                <input
+                    type="text"
+                    id="newQuestion"
+                    placeholder="Enter question"
+                >
+
+                <input
+                    type="text"
+                    id="optionA"
+                    placeholder="Option A"
+                >
+
+                <input
+                    type="text"
+                    id="optionB"
+                    placeholder="Option B"
+                >
+
+                <input
+                    type="text"
+                    id="optionC"
+                    placeholder="Option C"
+                >
+
+                <input
+                    type="text"
+                    id="optionD"
+                    placeholder="Option D"
+                >
+
+                <select id="correctAnswer">
+
+                    <option value="0">
+                        Correct Answer: A
+                    </option>
+
+                    <option value="1">
+                        Correct Answer: B
+                    </option>
+
+                    <option value="2">
+                        Correct Answer: C
+                    </option>
+
+                    <option value="3">
+                        Correct Answer: D
+                    </option>
+
+                </select>
+
+                <button onclick="addQuestion()">
+                    ➕ Add Question
+                </button>
+
+            </div>
+
+
+            <h3>Question List</h3>
+
+            <div id="questionList"></div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+let questions = [
+
+{
+question: "What does HTML stand for?",
+options: [
+"Hyper Text Markup Language",
+"High Text Machine Language",
+"Hyperlink Text Management Language",
+"Home Tool Markup Language"
+],
+answer: 0
+},
+
+{
+question: "Which tag is used to create a heading in HTML?",
+options: [
+"<head>",
+"<h1>",
+"<heading>",
+"<title>"
+],
+answer: 1
+},
+
+{
+question: "Which tag is used to create a paragraph?",
+options: [
+"<p>",
+"<para>",
+"<text>",
+"<paragraph>"
+],
+answer: 0
+},
+
+{
+question: "Which HTML tag is used to create a hyperlink?",
+options: [
+"<link>",
+"<a>",
+"<href>",
+"<url>"
+],
+answer: 1
+},
+
+{
+question: "Which attribute specifies the destination of a link?",
+options: [
+"src",
+"link",
+"href",
+"target"
+],
+answer: 2
+},
+
+{
+question: "Which tag is used to display an image?",
+options: [
+"<picture>",
+"<img>",
+"<image>",
+"<src>"
+],
+answer: 1
+},
+
+{
+question: "What does CSS stand for?",
+options: [
+"Computer Style Sheets",
+"Cascading Style Sheets",
+"Creative Style System",
+"Colorful Style Sheets"
+],
+answer: 1
+},
+
+{
+question: "Which language is mainly used for styling web pages?",
+options: [
+"HTML",
+"CSS",
+"JavaScript",
+"Python"
+],
+answer: 1
+},
+
+{
+question: "Which CSS property changes text color?",
+options: [
+"text-color",
+"font-color",
+"color",
+"foreground"
+],
+answer: 2
+},
+
+{
+question: "Which CSS property changes the background color?",
+options: [
+"bgcolor",
+"background-color",
+"background",
+"color-background"
+],
+answer: 1
+},
+
+{
+question: "Which CSS property is used to change font size?",
+options: [
+"font-size",
+"text-size",
+"size",
+"font-style"
+],
+answer: 0
+},
+
+{
+question: "Which symbol is used for an ID selector in CSS?",
+options: [
+".",
+"#",
+"*",
+"@"
+],
+answer: 1
+},
+
+{
+question: "Which symbol is used for a class selector in CSS?",
+options: [
+"#",
+".",
+"@",
+"&"
+],
+answer: 1
+},
+
+{
+question: "Which CSS property adds space inside an element?",
+options: [
+"margin",
+"padding",
+"spacing",
+"border"
+],
+answer: 1
+},
+
+{
+question: "Which CSS property adds space outside an element?",
+options: [
+"padding",
+"margin",
+"border",
+"outline"
+],
+answer: 1
+},
+
+{
+question: "Which language is used to add interactivity to web pages?",
+options: [
+"HTML",
+"CSS",
+"JavaScript",
+"SQL"
+],
+answer: 2
+},
+
+{
+question: "Which keyword is used to declare a variable in JavaScript?",
+options: [
+"variable",
+"let",
+"define",
+"varname"
+],
+answer: 1
+},
+
+{
+question: "Which of the following is also used to declare variables in JavaScript?",
+options: [
+"const",
+"integer",
+"string",
+"declare"
+],
+answer: 0
+},
+
+{
+question: "Which symbol is used for a single-line comment in JavaScript?",
+options: [
+"<!-- -->",
+"//",
+"/* */",
+"##"
+],
+answer: 1
+},
+
+{
+question: "Which function displays a message in the browser console?",
+options: [
+"print()",
+"console.log()",
+"display()",
+"show()"
+],
+answer: 1
+},
+
+{
+question: "What does DOM stand for?",
+options: [
+"Document Object Model",
+"Data Object Management",
+"Document Oriented Method",
+"Digital Object Model"
+],
+answer: 0
+},
+
+{
+question: "Which JavaScript method selects an element by its ID?",
+options: [
+"getElementById()",
+"getById()",
+"selectId()",
+"findId()"
+],
+answer: 0
+},
+
+{
+question: "Which method selects the first matching CSS selector?",
+options: [
+"querySelector()",
+"getSelector()",
+"selectFirst()",
+"queryElement()"
+],
+answer: 0
+},
+
+{
+question: "Which event occurs when a user clicks an element?",
+options: [
+"hover",
+"click",
+"submit",
+"load"
+],
+answer: 1
+},
+
+{
+question: "Which JavaScript method is commonly used to add an event?",
+options: [
+"addEventListener()",
+"addEvent()",
+"createEvent()",
+"eventAdd()"
+],
+answer: 0
+},
+
+{
+question: "What is the purpose of JavaScript in a Flashcard Quiz App?",
+options: [
+"Only to change colors",
+"To add functionality and interaction",
+"To create images",
+"To create databases only"
+],
+answer: 1
+},
+
+{
+question: "Which button can be used to show the answer of a flashcard?",
+options: [
+"Submit",
+"Show Answer",
+"Delete",
+"Reset"
+],
+answer: 1
+},
+
+{
+question: "What does CRUD stand for?",
+options: [
+"Create, Read, Update, Delete",
+"Copy, Read, Update, Display",
+"Create, Run, Update, Download",
+"Change, Read, Upload, Delete"
+],
+answer: 0
+},
+
+{
+question: "Which CRUD operation is used to add a new flashcard?",
+options: [
+"Read",
+"Update",
+"Create",
+"Delete"
+],
+answer: 2
+},
+
+{
+question: "Which CRUD operation is used to modify an existing flashcard?",
+options: [
+"Create",
+"Read",
+"Update",
+"Delete"
+],
+answer: 2
+},
+
+{
+question: "Which CRUD operation removes a flashcard?",
+options: [
+"Create",
+"Read",
+"Update",
+"Delete"
+],
+answer: 3
+},
+
+{
+question: "Which JavaScript data type is useful for storing multiple flashcards?",
+options: [
+"Array",
+"Boolean",
+"Number",
+"Character"
+],
+answer: 0
+},
+
+{
+question: "Which brackets are used to create an array in JavaScript?",
+options: [
+"{ }",
+"[ ]",
+"( )",
+"< >"
+],
+answer: 1
+},
+
+{
+question: "Which brackets are commonly used to create an object in JavaScript?",
+options: [
+"[ ]",
+"( )",
+"{ }",
+"< >"
+],
+answer: 2
+},
+
+{
+question: "Which property can be used to find the number of items in an array?",
+options: [
+"size",
+"count",
+"length",
+"total"
+],
+answer: 2
+},
+
+{
+question: "Which method adds an item to the end of an array?",
+options: [
+"add()",
+"push()",
+"insert()",
+"append()"
+],
+answer: 1
+},
+
+{
+question: "Which method removes the last item from an array?",
+options: [
+"remove()",
+"delete()",
+"pop()",
+"last()"
+],
+answer: 2
+},
+
+{
+question: "What is the purpose of a Next button in a Flashcard Quiz App?",
+options: [
+"Delete the app",
+"Move to the next flashcard",
+"Change the website",
+"Close the browser"
+],
+answer: 1
+},
+
+{
+question: "What is the purpose of a Previous button?",
+options: [
+"Move to the previous flashcard",
+"Delete the previous card",
+"Add a new card",
+"Submit the quiz"
+],
+answer: 0
+},
+
+{
+question: "What does innerHTML allow JavaScript to do?",
+options: [
+"Change HTML content",
+"Change computer settings",
+"Create a database",
+"Open VS Code"
+],
+answer: 0
+},
+
+{
+question: "Which file extension is used for an HTML file?",
+options: [
+".css",
+".js",
+".html",
+".web"
+],
+answer: 2
+},
+
+{
+question: "Which file extension is used for a CSS file?",
+options: [
+".style",
+".css",
+".design",
+".html"
+],
+answer: 1
+},
+
+{
+question: "Which file extension is used for a JavaScript file?",
+options: [
+".java",
+".script",
+".js",
+".javascript"
+],
+answer: 2
+},
+
+{
+question: "Which HTML tag is used to connect an external CSS file?",
+options: [
+"<css>",
+"<style>",
+"<link>",
+"<script>"
+],
+answer: 2
+},
+
+{
+question: "Which HTML tag is used to connect an external JavaScript file?",
+options: [
+"<javascript>",
+"<script>",
+"<js>",
+"<code>"
+],
+answer: 1
+},
+
+{
+question: "What is responsive web design?",
+options: [
+"Website works only on computers",
+"Website adapts to different screen sizes",
+"Website has only animations",
+"Website uses only JavaScript"
+],
+answer: 1
+},
+
+{
+question: "Which CSS feature is commonly used for responsive design?",
+options: [
+"Media queries",
+"Variables only",
+"Comments",
+"Borders"
+],
+answer: 0
+},
+
+{
+question: "What is the main purpose of a quiz app?",
+options: [
+"To store operating systems",
+"To test the user's knowledge",
+"To edit videos",
+"To create hardware"
+],
+answer: 1
+},
+
+{
+question: "What happens when the user clicks the Show Answer button?",
+options: [
+"The answer is displayed",
+"The card is deleted",
+"The browser closes",
+"A new website opens"
+],
+answer: 0
+},
+
+{
+question: "Which three technologies are mainly used in your Flashcard Quiz App?",
+options: [
+"HTML, CSS, JavaScript",
+"Java, Python, SQL",
+"C, C++, Java",
+"PHP, Python, C++"
+],
+answer: 0
+}
+];
+
+
+// ================= VARIABLES =================
+
+let currentQuestion = 0;
+
+let score = 0;
+
+let selectedAnswer = null;
+
+let submitted = false;
+
+let answered = [];
+
+
+// ================= LOAD QUESTION =================
+
+function loadQuestion() {
+
+    let q = questions[currentQuestion];
+
+    document.getElementById("question").textContent =
+        q.question;
+
+    document.getElementById("questionNumber").textContent =
+        "Question " +
+        (currentQuestion + 1) +
+        " of " +
+        questions.length;
+
+    document.getElementById("score").textContent =
+        "Score: " + score;
+
+
+    let optionsDiv =
+        document.getElementById("options");
+
+    optionsDiv.innerHTML = "";
+
+
+    selectedAnswer = null;
+
+    submitted = false;
+
+
+    document.getElementById("result").textContent = "";
+
+
+    q.options.forEach(function(option, index) {
+
+        let button =
+            document.createElement("button");
+
+        button.className = "option";
+
+        button.textContent =
+            String.fromCharCode(65 + index) +
+            ") " +
+            option;
+
+        button.onclick = function() {
+
+            selectOption(index);
+
+        };
+
+        optionsDiv.appendChild(button);
+
+    });
+
+
+    // If already answered
+    if (answered[currentQuestion] !== undefined) {
+
+        selectedAnswer =
+            answered[currentQuestion];
+
+        submitted = true;
+
+        let buttons =
+            document.querySelectorAll(".option");
+
+
+        buttons.forEach(function(button, index) {
+
+            if (index === selectedAnswer) {
+
+                button.classList.add("selected");
+
+            }
+
+            if (index === q.answer) {
+
+                button.classList.add("correct");
+
+            }
+
+            if (
+                index === selectedAnswer &&
+                selectedAnswer !== q.answer
+            ) {
+
+                button.classList.add("wrong");
+
+            }
+
+        });
+
+
+        if (selectedAnswer === q.answer) {
+
+            document.getElementById("result").textContent =
+                "✅ Correct Answer!";
+
+        } else {
+
+            document.getElementById("result").textContent =
+                "❌ Wrong Answer!";
+
+        }
+
+    }
+
+}
+
+
+// ================= SELECT OPTION =================
+
+function selectOption(index) {
+
+    if (submitted) {
+
+        return;
+
+    }
+
+    selectedAnswer = index;
+
+
+    let buttons =
+        document.querySelectorAll(".option");
+
+
+    buttons.forEach(function(button) {
+
+        button.classList.remove("selected");
+
+    });
+
+
+    buttons[index].classList.add("selected");
+
+}
+
+
+// ================= SUBMIT =================
+
+function submitAnswer() {
+
+    if (selectedAnswer === null) {
+
+        alert("Please select an option!");
+
+        return;
+
+    }
+
+
+    if (submitted) {
+
+        return;
+
+    }
+
+
+    let correctAnswer =
+        questions[currentQuestion].answer;
+
+
+    answered[currentQuestion] =
+        selectedAnswer;
+
+
+    submitted = true;
+
+
+    let buttons =
+        document.querySelectorAll(".option");
+
+
+    buttons.forEach(function(button, index) {
+
+        if (index === correctAnswer) {
+
+            button.classList.add("correct");
+
+        }
+
+
+        if (
+            index === selectedAnswer &&
+            selectedAnswer !== correctAnswer
+        ) {
+
+            button.classList.add("wrong");
+
+        }
+
+    });
+
+
+    if (selectedAnswer === correctAnswer) {
+
+        score++;
+
+        document.getElementById("result").textContent =
+            "✅ Correct Answer!";
+
+    } else {
+
+        document.getElementById("result").textContent =
+            "❌ Wrong Answer!";
+
+    }
+
+
+    document.getElementById("score").textContent =
+        "Score: " + score;
+
+}
+
+
+// ================= NEXT =================
+
+function nextQuestion() {
+
+    if (currentQuestion < questions.length - 1) {
+
+        currentQuestion++;
+
+        loadQuestion();
+
+    } else {
+
+        alert(
+            "Quiz Completed! Your Score is " +
+            score +
+            " / " +
+            questions.length
+        );
+
+    }
+
+}
+
+
+// ================= PREVIOUS =================
+
+function previousQuestion() {
+
+    if (currentQuestion > 0) {
+
+        currentQuestion--;
+
+        loadQuestion();
+
+    }
+
+}
+
+
+// ================= RESTART =================
+
+function restartQuiz() {
+
+    currentQuestion = 0;
+
+    score = 0;
+
+    selectedAnswer = null;
+
+    submitted = false;
+
+    answered = [];
+
+
+    loadQuestion();
+
+}
+
+
+// ================= SHOW QUIZ =================
+
+function showQuiz() {
+
+    document.getElementById("quizSection").style.display =
+        "block";
+
+    document.getElementById("manageSection").style.display =
+        "none";
+
+}
+
+
+// ================= SHOW MANAGE =================
+
+function showManage() {
+
+    document.getElementById("quizSection").style.display =
+        "none";
+
+    document.getElementById("manageSection").style.display =
+        "block";
+
+    displayQuestions();
+
+}
+
+
+// ================= ADD QUESTION =================
+
+function addQuestion() {
+
+    let question =
+        document.getElementById("newQuestion").value;
+
+    let a =
+        document.getElementById("optionA").value;
+
+    let b =
+        document.getElementById("optionB").value;
+
+    let c =
+        document.getElementById("optionC").value;
+
+    let d =
+        document.getElementById("optionD").value;
+
+    let answer =
+        Number(
+            document.getElementById("correctAnswer").value
+        );
+
+
+    if (
+        question === "" ||
+        a === "" ||
+        b === "" ||
+        c === "" ||
+        d === ""
+    ) {
+
+        alert("Please fill all fields!");
+
+        return;
+
+    }
+
+
+    questions.push({
+
+        question: question,
+
+        options: [a, b, c, d],
+
+        answer: answer
+
+    });
+
+
+    alert("Question added successfully!");
+
+
+    document.getElementById("newQuestion").value = "";
+
+    document.getElementById("optionA").value = "";
+
+    document.getElementById("optionB").value = "";
+
+    document.getElementById("optionC").value = "";
+
+    document.getElementById("optionD").value = "";
+
+
+    displayQuestions();
+
+}
+
+
+// ================= DISPLAY QUESTIONS =================
+
+function displayQuestions() {
+
+    let list =
+        document.getElementById("questionList");
+
+    list.innerHTML = "";
+
+
+    questions.forEach(function(q, index) {
+
+        let div =
+            document.createElement("div");
+
+        div.className = "question-item";
+
+
+        div.innerHTML = `
+
+            <p>
+                ${index + 1}. ${q.question}
+            </p>
+
+            <small>
+                Correct Answer:
+                ${String.fromCharCode(65 + q.answer)}
+            </small>
+
+            <br><br>
+
+            <button
+                class="edit-btn"
+                onclick="editQuestion(${index})">
+                ✏️ Edit
+            </button>
+
+            <button
+                class="delete-btn"
+                onclick="deleteQuestion(${index})">
+                🗑️ Delete
+            </button>
+
+        `;
+
+
+        list.appendChild(div);
+
+    });
+
+}
+
+
+// ================= DELETE =================
+
+function deleteQuestion(index) {
+
+    if (
+        confirm(
+            "Are you sure you want to delete this question?"
+        )
+    ) {
+
+        questions.splice(index, 1);
+
+
+        if (currentQuestion >= questions.length) {
+
+            currentQuestion =
+                questions.length - 1;
+
+        }
+
+
+        displayQuestions();
+
+        loadQuestion();
+
+    }
+
+}
+
+
+// ================= EDIT =================
+
+function editQuestion(index) {
+
+    let q = questions[index];
+
+
+    let newQuestion =
+        prompt(
+            "Enter new question:",
+            q.question
+        );
+
+
+    if (newQuestion === null) {
+
+        return;
+
+    }
+
+
+    let newA =
+        prompt(
+            "Enter Option A:",
+            q.options[0]
+        );
+
+
+    let newB =
+        prompt(
+            "Enter Option B:",
+            q.options[1]
+        );
+
+
+    let newC =
+        prompt(
+            "Enter Option C:",
+            q.options[2]
+        );
+
+
+    let newD =
+        prompt(
+            "Enter Option D:",
+            q.options[3]
+        );
+
+
+    let newAnswer =
+        prompt(
+            "Enter correct answer (A/B/C/D):",
+            String.fromCharCode(65 + q.answer)
+        );
+
+
+    let answerIndex =
+        newAnswer.toUpperCase().charCodeAt(0) - 65;
+
+
+    questions[index] = {
+
+        question: newQuestion,
+
+        options: [
+            newA,
+            newB,
+            newC,
+            newD
+        ],
+
+        answer: answerIndex
+
+    };
+
+
+    displayQuestions();
+
+    loadQuestion();
+
+    alert("Question updated!");
+
+}
+
+
+// ================= START =================
+
+loadQuestion();
